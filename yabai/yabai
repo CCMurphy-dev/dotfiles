@@ -1,0 +1,1 @@
+chris ALL=(root) NOPASSWD: sha256:958e9adcb2caddeca536d3b27f11a4fe6a2d375742b33ee5adc34860b088107f /opt/homebrew/bin/yabai --load-sa

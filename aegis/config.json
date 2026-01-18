@@ -1,0 +1,27 @@
+{
+    "_readme": "Aegis config - edit values below, changes apply automatically",
+
+    "appSwitcherEnabled": true,
+    "appSwitcherCmdScrollEnabled": true,
+
+    "showDeviceHUD": true,
+    "deviceHUDAutoHideDelay": 3.0,
+    "excludedBluetoothDevices": ["watch"],
+
+    "showMusicHUD": true,
+    "musicHUDRightPanelMode": "visualizer",
+
+    "showFocusHUD": true,
+
+    "maxAppIconsPerSpace": 3,
+    "excludedApps": ["Finder", "Aegis"],
+    
+    "launcherApps": [
+        "com.apple.finder",
+        "com.apple.systempreferences",
+        "com.apple.ActivityMonitor",
+        "com.googlecode.iterm2"
+    ],
+
+    "expandContextButtonOnScroll": false
+}
