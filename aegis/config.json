@@ -23,5 +23,7 @@
         "com.googlecode.iterm2"
     ],
 
-    "expandContextButtonOnScroll": false
+    "expandContextButtonOnScroll": false,
+    "mediaHUDEnableMarquee": false
+
 }
