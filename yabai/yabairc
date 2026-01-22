@@ -1,0 +1,172 @@
+#!/usr/bin/env sh
+
+# the scripting-addition must be loaded manually if
+# you are running yabai on macOS Big Sur. Uncomment
+# the following line to have the injection performed
+# when the config is executed during startup.
+#
+# for this to work you must configure sudo such that
+# it will be able to run the command without password
+#
+# see this wiki page for information:
+#  - https://github.com/koekeishiya/yabai/wiki/Installing-yabai-(latest-release)
+#
+
+yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
+sudo yabai --load-sa
+
+# global settings
+
+yabai -m config mouse_follows_focus          off
+yabai -m config focus_follows_mouse          off
+yabai -m config window_origin_display        default
+yabai -m config window_placement             second_child
+yabai -m config window_topmost               off
+yabai -m config window_shadow                off
+yabai -m config window_opacity               off
+yabai -m config window_opacity_duration      0.0
+yabai -m config active_window_opacity        1.0
+yabai -m config normal_window_opacity        1.0
+yabai -m config window_border                off
+yabai -m config window_border_width          10
+yabai -m config active_window_border_color   0xff775759
+yabai -m config normal_window_border_color   0xff555555
+yabai -m config insert_feedback_color        0xffd75f5f
+yabai -m config split_ratio                  0.50
+yabai -m config auto_balance                 off
+yabai -m config mouse_modifier               fn
+yabai -m config mouse_action1                move
+yabai -m config mouse_action2                resize
+yabai -m config mouse_drop_action            swap
+
+# general space settings
+yabai -m config layout                       bsp
+yabai -m config top_padding                  10
+yabai -m config bottom_padding               20
+yabai -m config left_padding                 50
+yabai -m config right_padding                50
+yabai -m config window_gap                   15
+
+# space specific settings
+# yabai -m config --space 6 layout stack
+
+## Space 1 - Notion
+yabai -m rule --add space=1 label="Notion" app="^Notion"
+
+## Space 2 - Learn OR code
+yabai -m rule --add space=2 label="Anki" app="^Anki"
+yabai -m rule --add space=2 label="PDF Expert" app="^PDF Expert"
+yabai -m rule --add space=2 label="Anki" app="^Anki"
+yabai -m rule --add space=2 label="vscode" app="^Code$"
+yabai -m rule --add space=2 label="xcode" app="^Xcode$"
+
+## Space 3 - NotebookLM and AI Tools
+yabai -m rule --add space=3 label="NotebookLM" app="NotebookLM"
+yabai -m rule --add space=3 label="Gemini" app="Gemini"
+yabai -m rule --add space=3 label="ChatGPT" app="ChatGPT"
+
+
+## Space 4 - Internet
+yabai -m rule --add space=4 label="Firefox" app="Firefox"
+
+## Space 6 - Media & Stacked windows
+yabai -m rule --add space=5 label="Broadcasts" app="^Broadcasts"
+yabai -m rule --add space=5 label="Music" app="^Music"
+yabai -m rule --add space=5 label="IINA" app="^IINA"
+yabai -m rule --add space=5 label="VLC" app="^VLC"
+yabai -m rule --add space=5 label="Prime Video" app="^Prime Video"
+yabai -m rule --add space=5 label="Plex" app="^Plex"
+
+# ===== Rules ==================================
+# Need to add Finder as an app for exclusion
+
+yabai -m rule --add label="Safari" app="^Safari$" title="^(General|(Tab|Password|Website|Extension)s|AutoFill|Se(arch|curity)|Privacy|Advanced)$" manage=off
+yabai -m rule --add label="System Preferences" app="^System Preferences$" title=".*" manage=off
+yabai -m rule --add label="System Settings" app="^System Settings" title=".*" manage=off
+yabai -m rule --add label="App Store" app="^App Store$" manage=on
+yabai -m rule --add label="Activity Monitor" app="^Activity Monitor$" manage=off
+yabai -m rule --add label="Software Update" title="Software Update" manage=off
+yabai -m rule --add label="About This Mac" app="System Information" title="About This Mac" manage=off
+yabai -m rule --add label="Plexamp" app="Plexamp" manage=off
+yabai -m rule --add label="Calculator" app="^Calculator$" manage=off
+yabai -m rule --add label="Software Update" title="Software Update" manage=off
+yabai -m rule --add label="Aegis" app="^Aegis$" manage=off
+yabai -m rule --add label="iTerm2" app="^iTerm2$" manage=off
+
+
+# Rule for new windows
+yabai -m rule --add app="^Finder$" manage=off
+
+# Cleanup existing ones after startup
+yabai -m signal --add event=window_created action='[ "$(yabai -m query --windows --window $YABAI_WINDOW_ID | jq -r .app)" = "Finder" ] && yabai -m window --demanage $YABAI_WINDOW_ID'
+
+# Do not manage windows with certain titles eg. Copying files or moving to bin
+yabai -m rule --add title="(Copy|Bin|About This Mac|Info|Edit Current)" manage=off
+
+# Do not manage some apps which are not resizable
+yabai -m rule --add app="^(Calculator|VLC|System Preferences)$" manage=off
+
+# UWM Toggle
+#yabai -m signal --add event=window_created action="~/.config/yabai/scripts/yabaiUW.sh"
+#yabai -m signal --add event=window_destroyed action="~/.config/yabai/scripts/yabaiUW.sh"
+#yabai -m signal --add event=window_focused action="~/.config/yabai/scripts/yabaiUW.sh"
+
+# ============================================
+# Aegis Integration for .yabairc
+# ============================================
+# Add this section to your ~/.yabairc file to automatically
+# set up Aegis integration when yabai starts
+#
+# OR run the setup-aegis-yabai.sh script manually
+
+AEGIS_NOTIFY="$HOME/.config/aegis/aegis-yabai-notify"
+
+# Create the notification script if it doesn't exist
+if [ ! -f "$AEGIS_NOTIFY_SCRIPT" ]; then
+    echo "Creating Aegis notification script..."
+    sudo tee "$AEGIS_NOTIFY_SCRIPT" > /dev/null << 'SCRIPT'
+#!/bin/bash
+touch /tmp/aegis_yabai_event
+SCRIPT
+    sudo chmod +x "$AEGIS_NOTIFY_SCRIPT"
+fi
+
+# Remove old Aegis signals
+yabai -m signal --remove aegis_space_changed 2>/dev/null
+yabai -m signal --remove aegis_space_destroyed 2>/dev/null
+yabai -m signal --remove aegis_window_focused 2>/dev/null
+yabai -m signal --remove aegis_window_created 2>/dev/null
+yabai -m signal --remove aegis_window_destroyed 2>/dev/null
+yabai -m signal --remove aegis_window_moved 2>/dev/null
+yabai -m signal --remove aegis_application_front_switched 2>/dev/null
+
+# Register Aegis signals
+yabai -m signal --add event=space_changed action="$AEGIS_NOTIFY_SCRIPT" label=aegis_space_changed
+yabai -m signal --add event=space_destroyed action="$AEGIS_NOTIFY_SCRIPT" label=aegis_space_destroyed
+yabai -m signal --add event=window_focused action="$AEGIS_NOTIFY_SCRIPT" label=aegis_window_focused
+yabai -m signal --add event=window_created action="$AEGIS_NOTIFY_SCRIPT" label=aegis_window_created
+yabai -m signal --add event=window_destroyed action="$AEGIS_NOTIFY_SCRIPT" label=aegis_window_destroyed
+yabai -m signal --add event=window_moved action="$AEGIS_NOTIFY_SCRIPT" label=aegis_window_moved
+yabai -m signal --add event=application_front_switched action="$AEGIS_NOTIFY_SCRIPT" label=aegis_application_front_switched
+
+echo "Aegis yabai integration loaded"
+
+
+# AEGIS_INTEGRATION_START
+# Aegis window manager integration - DO NOT EDIT THIS SECTION
+AEGIS_NOTIFY="$HOME/.config/aegis/aegis-yabai-notify"
+yabai -m signal --remove aegis_space_changed 2>/dev/null || true
+yabai -m signal --remove aegis_space_destroyed 2>/dev/null || true
+yabai -m signal --remove aegis_window_focused 2>/dev/null || true
+yabai -m signal --remove aegis_window_created 2>/dev/null || true
+yabai -m signal --remove aegis_window_destroyed 2>/dev/null || true
+yabai -m signal --remove aegis_window_moved 2>/dev/null || true
+yabai -m signal --remove aegis_application_front_switched 2>/dev/null || true
+yabai -m signal --add event=space_changed action="YABAI_EVENT_TYPE=space_changed $AEGIS_NOTIFY" label=aegis_space_changed
+yabai -m signal --add event=space_destroyed action="YABAI_EVENT_TYPE=space_destroyed $AEGIS_NOTIFY" label=aegis_space_destroyed
+yabai -m signal --add event=window_focused action="YABAI_EVENT_TYPE=window_focused $AEGIS_NOTIFY" label=aegis_window_focused
+yabai -m signal --add event=window_created action="YABAI_EVENT_TYPE=window_created $AEGIS_NOTIFY" label=aegis_window_created
+yabai -m signal --add event=window_destroyed action="YABAI_EVENT_TYPE=window_destroyed $AEGIS_NOTIFY" label=aegis_window_destroyed
+yabai -m signal --add event=window_moved action="YABAI_EVENT_TYPE=window_moved $AEGIS_NOTIFY" label=aegis_window_moved
+yabai -m signal --add event=application_front_switched action="YABAI_EVENT_TYPE=application_front_switched $AEGIS_NOTIFY" label=aegis_application_front_switched
+# AEGIS_INTEGRATION_END

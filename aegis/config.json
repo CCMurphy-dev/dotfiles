@@ -1,21 +1,43 @@
 {
-    "_readme": "Aegis config - edit values below, changes apply automatically",
+    "_readme": "Aegis config - changes apply automatically when saved. See CONFIG_OPTIONS.md for docs.",
 
+    "_section_app_switcher": "=== APP SWITCHER (Cmd+Tab replacement) ===",
     "appSwitcherEnabled": true,
-    "appSwitcherCmdScrollEnabled": true,
+    "appSwitcherShowMinimized": true,
+    "appSwitcherShowHidden": false,
+    "appSwitcherCmdScrollEnabled": false,
 
+    "_section_media": "=== NOTCH HUD - MEDIA (Now Playing) ===",
+    "showMediaHUD": true,
+    "mediaHUDRightPanelMode": "visualizer",
+    "mediaHUDEnableMarquee": false,
+    "mediaHUDAutoHide": false,
+    "mediaHUDAutoHideDelay": 5.0,
+
+    "_section_bluetooth": "=== NOTCH HUD - BLUETOOTH DEVICES ===",
     "showDeviceHUD": true,
     "deviceHUDAutoHideDelay": 3.0,
     "excludedBluetoothDevices": ["watch"],
 
-    "showMusicHUD": true,
-    "musicHUDRightPanelMode": "visualizer",
-
+    "_section_focus": "=== NOTCH HUD - FOCUS MODE ===",
     "showFocusHUD": true,
+    "focusHUDAutoHideDelay": 2.0,
 
+    "_section_notifications": "=== NOTCH HUD - NOTIFICATIONS ===",
+    "showNotificationHUD": true,
+    "notificationHUDAutoHide": true,
+    "notificationHUDAutoHideDelay": 8.0,
+
+    "_section_volume": "=== NOTCH HUD - VOLUME/BRIGHTNESS ===",
+    "notchHUDAutoHideDelay": 1.5,
+
+    "_section_space_indicators": "=== MENU BAR - SPACE INDICATORS ===",
     "maxAppIconsPerSpace": 3,
     "excludedApps": ["Finder", "Aegis"],
-    
+    "showAppNameInExpansion": false,
+    "useSwipeToDestroySpace": true,
+
+    "_section_launcher": "=== MENU BAR - LAUNCHER BUTTON ===",
     "launcherApps": [
         "com.apple.finder",
         "com.apple.systempreferences",
@@ -23,7 +45,30 @@
         "com.googlecode.iterm2"
     ],
 
-    "expandContextButtonOnScroll": false,
-    "mediaHUDEnableMarquee": false
+    "_section_context_button": "=== MENU BAR - CONTEXT BUTTON ===",
+    "expandContextButtonOnScroll": true,
 
+    "_section_system_status": "=== SYSTEM STATUS ===",
+    "dateFormat": "long",
+    "showFocusName": false,
+
+    "_section_behavior": "=== BEHAVIOR ===",
+    "launchAtLogin": true,
+    "enableLayoutActionHaptics": true,
+
+    "_section_thresholds": "=== INTERACTION THRESHOLDS ===",
+    "dragDistanceThreshold": 3,
+    "swipeDestroyThreshold": -120,
+    "scrollActionThreshold": 3,
+    "scrollNotchedBehavior": true,
+
+    "_section_opacity": "=== VISUAL - OPACITY ===",
+    "activeSpaceBgOpacity": 0.18,
+    "hoveredSpaceBgOpacity": 0.15,
+    "inactiveSpaceBgOpacity": 0.12,
+
+    "_section_animation": "=== ANIMATION TIMINGS ===",
+    "stateTransitionDuration": 0.25,
+    "notchHUDFadeInDuration": 0.2,
+    "notchHUDFadeOutDuration": 0.3
 }
