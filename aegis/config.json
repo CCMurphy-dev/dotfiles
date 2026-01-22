@@ -42,7 +42,8 @@
         "com.apple.finder",
         "com.apple.systempreferences",
         "com.apple.ActivityMonitor",
-        "com.googlecode.iterm2"
+        "com.googlecode.iterm2",
+        "com.apple.Passwords"
     ],
 
     "_section_context_button": "=== MENU BAR - CONTEXT BUTTON ===",
