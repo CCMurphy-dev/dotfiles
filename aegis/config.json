@@ -27,6 +27,11 @@
     "showNotificationHUD": true,
     "notificationHUDAutoHide": true,
     "notificationHUDAutoHideDelay": 8.0,
+    "notificationExcludedApps": [
+        "com.apple.controlcenter",
+        "com.apple.donotdisturbd",
+        "com.apple.FocusSettings"
+    ],
 
     "_section_volume": "=== NOTCH HUD - VOLUME/BRIGHTNESS ===",
     "notchHUDAutoHideDelay": 1.5,

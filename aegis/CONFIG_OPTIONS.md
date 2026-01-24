@@ -47,6 +47,24 @@ Only include settings you want to change - defaults are used for anything not sp
 
 ---
 
+## Notch HUD - Notifications
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `showNotificationHUD` | bool | `true` | Show system notifications in notch HUD |
+| `notificationHUDAutoHide` | bool | `true` | Auto-hide notification HUD after delay |
+| `notificationHUDAutoHideDelay` | number | `8.0` | Seconds before HUD auto-hides |
+| `notificationExcludedApps` | [string] | See below | Bundle IDs or app names to exclude |
+
+**Default notificationExcludedApps:**
+```json
+["com.apple.controlcenter", "com.apple.donotdisturbd", "com.apple.FocusSettings"]
+```
+
+Notifications from these apps are silently ignored. Use bundle IDs (e.g., `"com.apple.mail"`) or partial app name matches (e.g., `"Slack"`).
+
+---
+
 ## Menu Bar
 
 | Option | Type | Default | Description |
