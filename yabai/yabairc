@@ -21,16 +21,11 @@ yabai -m config mouse_follows_focus          off
 yabai -m config focus_follows_mouse          off
 yabai -m config window_origin_display        default
 yabai -m config window_placement             second_child
-yabai -m config window_topmost               off
 yabai -m config window_shadow                off
 yabai -m config window_opacity               off
 yabai -m config window_opacity_duration      0.0
 yabai -m config active_window_opacity        1.0
 yabai -m config normal_window_opacity        1.0
-yabai -m config window_border                off
-yabai -m config window_border_width          10
-yabai -m config active_window_border_color   0xff775759
-yabai -m config normal_window_border_color   0xff555555
 yabai -m config insert_feedback_color        0xffd75f5f
 yabai -m config split_ratio                  0.50
 yabai -m config auto_balance                 off
@@ -43,8 +38,8 @@ yabai -m config mouse_drop_action            swap
 yabai -m config layout                       bsp
 yabai -m config top_padding                  10
 yabai -m config bottom_padding               20
-yabai -m config left_padding                 50
-yabai -m config right_padding                50
+yabai -m config left_padding                 40
+yabai -m config right_padding                40
 yabai -m config window_gap                   15
 
 # space specific settings
@@ -60,14 +55,8 @@ yabai -m rule --add space=2 label="Anki" app="^Anki"
 yabai -m rule --add space=2 label="vscode" app="^Code$"
 yabai -m rule --add space=2 label="xcode" app="^Xcode$"
 
-## Space 3 - NotebookLM and AI Tools
-yabai -m rule --add space=3 label="NotebookLM" app="NotebookLM"
-yabai -m rule --add space=3 label="Gemini" app="Gemini"
-yabai -m rule --add space=3 label="ChatGPT" app="ChatGPT"
-
-
-## Space 4 - Internet
-yabai -m rule --add space=4 label="Firefox" app="Firefox"
+## Space 3 - Internet
+yabai -m rule --add space=3 label="Firefox" app="Firefox"
 
 ## Space 6 - Media & Stacked windows
 yabai -m rule --add space=5 label="Broadcasts" app="^Broadcasts"
@@ -93,12 +82,44 @@ yabai -m rule --add label="Software Update" title="Software Update" manage=off
 yabai -m rule --add label="Aegis" app="^Aegis$" manage=off
 yabai -m rule --add label="iTerm2" app="^iTerm2$" manage=off
 
+# Rule for native tabbed windows
+yabai -m rule --add app="^Finder$" manage=tab
+yabai -m rule --add app="^Terminal$" manage=tab
+yabai -m rule --add app="^Preview$" manage=tab
 
-# Rule for new windows
-yabai -m rule --add app="^Finder$" manage=off
+# Float SPSS dialog windows (Open, Save, etc.) — keep managed for Aegis
+yabai -m signal --add event=window_created app="^IBM SPSS Statistics" action='
+  title=$(yabai -m query --windows --window $YABAI_WINDOW_ID | jq -r ".title")
+  if ! echo "$title" | grep -qE "(Data Editor|Syntax Editor|Viewer)"; then
+    yabai -m window $YABAI_WINDOW_ID --toggle float
+  fi
+' label=spss_float_dialogs
 
-# Cleanup existing ones after startup
-yabai -m signal --add event=window_created action='[ "$(yabai -m query --windows --window $YABAI_WINDOW_ID | jq -r .app)" = "Finder" ] && yabai -m window --demanage $YABAI_WINDOW_ID'
+# Auto-stack IBM SPSS Statistics windows by type
+# Stack Data Editor windows together
+yabai -m signal --add event=window_created app="^IBM SPSS Statistics" title="Data Editor" action='
+  existing=$(yabai -m query --windows --space | jq "[.[] | select(.app == \"IBM SPSS Statistics\" and .title != null and (.title | test(\"Data Editor\")) and .id != ${YABAI_WINDOW_ID})] | first | .id")
+  if [ "$existing" != "null" ] && [ -n "$existing" ]; then
+    yabai -m window $YABAI_WINDOW_ID --stack $existing
+  fi
+' label=spss_stack_data
+
+# Stack Syntax Editor windows together
+yabai -m signal --add event=window_created app="^IBM SPSS Statistics" title="Syntax Editor" action='
+  existing=$(yabai -m query --windows --space | jq "[.[] | select(.app == \"IBM SPSS Statistics\" and .title != null and (.title | test(\"Syntax Editor\")) and .id != ${YABAI_WINDOW_ID})] | first | .id")
+  if [ "$existing" != "null" ] && [ -n "$existing" ]; then
+    yabai -m window $YABAI_WINDOW_ID --stack $existing
+  fi
+' label=spss_stack_syntax
+
+# Stack Viewer (Output) windows together
+yabai -m signal --add event=window_created app="^IBM SPSS Statistics" title="Viewer" action='
+  existing=$(yabai -m query --windows --space | jq "[.[] | select(.app == \"IBM SPSS Statistics\" and .title != null and (.title | test(\"Viewer\")) and .id != ${YABAI_WINDOW_ID})] | first | .id")
+  if [ "$existing" != "null" ] && [ -n "$existing" ]; then
+    yabai -m window $YABAI_WINDOW_ID --stack $existing
+  fi
+' label=spss_stack_output
+
 
 # Do not manage windows with certain titles eg. Copying files or moving to bin
 yabai -m rule --add title="(Copy|Bin|About This Mac|Info|Edit Current)" manage=off
@@ -107,39 +128,44 @@ yabai -m rule --add title="(Copy|Bin|About This Mac|Info|Edit Current)" manage=o
 yabai -m rule --add app="^(Calculator|VLC|System Preferences)$" manage=off
 
 # UWM Toggle
-#yabai -m signal --add event=window_created action="~/.config/yabai/scripts/yabaiUW.sh"
-#yabai -m signal --add event=window_destroyed action="~/.config/yabai/scripts/yabaiUW.sh"
-#yabai -m signal --add event=window_focused action="~/.config/yabai/scripts/yabaiUW.sh"
+# UWM Toggle - Ultrawide padding adjustments
+yabai -m signal --add event=window_created action="YABAI_EVENT_TYPE=window_created ~/.config/yabai/scripts/yabaiUW.sh"
+yabai -m signal --add event=window_destroyed action="YABAI_EVENT_TYPE=window_destroyed ~/.config/yabai/scripts/yabaiUW.sh"
+yabai -m signal --add event=window_focused action="YABAI_EVENT_TYPE=window_focused ~/.config/yabai/scripts/yabaiUW.sh"
+yabai -m signal --add event=window_minimized action="YABAI_EVENT_TYPE=window_minimized ~/.config/yabai/scripts/yabaiUW.sh"
+yabai -m signal --add event=window_deminimized action="YABAI_EVENT_TYPE=window_deminimized ~/.config/yabai/scripts/yabaiUW.sh"
+yabai -m signal --add event=space_changed action="YABAI_EVENT_TYPE=space_changed ~/.config/yabai/scripts/yabaiUW.sh"
 
-# ============================================
-# Aegis Integration for .yabairc
-# ============================================
-# Add this section to your ~/.yabairc file to automatically
-# set up Aegis integration when yabai starts
-#
-# OR run the setup-aegis-yabai.sh script manually
 
 # AEGIS_INTEGRATION_START
 # Aegis window manager integration - DO NOT EDIT THIS SECTION
 AEGIS_NOTIFY="$HOME/.config/aegis/aegis-yabai-notify"
-
-# Remove old signals (ignore errors if they don't exist)
 yabai -m signal --remove aegis_space_changed 2>/dev/null || true
+yabai -m signal --remove aegis_space_created 2>/dev/null || true
 yabai -m signal --remove aegis_space_destroyed 2>/dev/null || true
 yabai -m signal --remove aegis_window_focused 2>/dev/null || true
 yabai -m signal --remove aegis_window_created 2>/dev/null || true
 yabai -m signal --remove aegis_window_destroyed 2>/dev/null || true
 yabai -m signal --remove aegis_window_moved 2>/dev/null || true
+yabai -m signal --remove aegis_window_minimized 2>/dev/null || true
+yabai -m signal --remove aegis_window_deminimized 2>/dev/null || true
+yabai -m signal --remove aegis_application_launched 2>/dev/null || true
+yabai -m signal --remove aegis_application_terminated 2>/dev/null || true
 yabai -m signal --remove aegis_application_front_switched 2>/dev/null || true
-
-# Register Aegis signals with YABAI_EVENT_TYPE environment variable
-yabai -m signal --add event=space_changed action="YABAI_EVENT_TYPE=space_changed $AEGIS_NOTIFY" label=aegis_space_changed
-yabai -m signal --add event=space_destroyed action="YABAI_EVENT_TYPE=space_destroyed $AEGIS_NOTIFY" label=aegis_space_destroyed
-yabai -m signal --add event=window_focused action="YABAI_EVENT_TYPE=window_focused $AEGIS_NOTIFY" label=aegis_window_focused
-yabai -m signal --add event=window_created action="YABAI_EVENT_TYPE=window_created $AEGIS_NOTIFY" label=aegis_window_created
-yabai -m signal --add event=window_destroyed action="YABAI_EVENT_TYPE=window_destroyed $AEGIS_NOTIFY" label=aegis_window_destroyed
-yabai -m signal --add event=window_moved action="YABAI_EVENT_TYPE=window_moved $AEGIS_NOTIFY" label=aegis_window_moved
+yabai -m signal --remove aegis_application_hidden 2>/dev/null || true
+yabai -m signal --remove aegis_application_visible 2>/dev/null || true
+yabai -m signal --add event=space_changed action="YABAI_EVENT_TYPE=space_changed YABAI_SPACE_INDEX=\$YABAI_SPACE_INDEX $AEGIS_NOTIFY" label=aegis_space_changed
+yabai -m signal --add event=space_created action="YABAI_EVENT_TYPE=space_created YABAI_SPACE_INDEX=\$YABAI_SPACE_INDEX $AEGIS_NOTIFY" label=aegis_space_created
+yabai -m signal --add event=space_destroyed action="YABAI_EVENT_TYPE=space_destroyed YABAI_SPACE_INDEX=\$YABAI_SPACE_INDEX $AEGIS_NOTIFY" label=aegis_space_destroyed
+yabai -m signal --add event=window_focused action="YABAI_EVENT_TYPE=window_focused YABAI_WINDOW_ID=\$YABAI_WINDOW_ID YABAI_SPACE_INDEX=\$YABAI_SPACE_INDEX $AEGIS_NOTIFY" label=aegis_window_focused
+yabai -m signal --add event=window_created action="YABAI_EVENT_TYPE=window_created YABAI_WINDOW_ID=\$YABAI_WINDOW_ID YABAI_SPACE_INDEX=\$YABAI_SPACE_INDEX $AEGIS_NOTIFY" label=aegis_window_created
+yabai -m signal --add event=window_destroyed action="YABAI_EVENT_TYPE=window_destroyed YABAI_WINDOW_ID=\$YABAI_WINDOW_ID YABAI_SPACE_INDEX=\$YABAI_SPACE_INDEX $AEGIS_NOTIFY" label=aegis_window_destroyed
+yabai -m signal --add event=window_moved action="YABAI_EVENT_TYPE=window_moved YABAI_WINDOW_ID=\$YABAI_WINDOW_ID YABAI_SPACE_INDEX=\$YABAI_SPACE_INDEX $AEGIS_NOTIFY" label=aegis_window_moved
+yabai -m signal --add event=window_minimized action="YABAI_EVENT_TYPE=window_minimized YABAI_WINDOW_ID=\$YABAI_WINDOW_ID YABAI_SPACE_INDEX=\$YABAI_SPACE_INDEX $AEGIS_NOTIFY" label=aegis_window_minimized
+yabai -m signal --add event=window_deminimized action="YABAI_EVENT_TYPE=window_deminimized YABAI_WINDOW_ID=\$YABAI_WINDOW_ID YABAI_SPACE_INDEX=\$YABAI_SPACE_INDEX $AEGIS_NOTIFY" label=aegis_window_deminimized
+yabai -m signal --add event=application_launched action="YABAI_EVENT_TYPE=application_launched $AEGIS_NOTIFY" label=aegis_application_launched
+yabai -m signal --add event=application_terminated action="YABAI_EVENT_TYPE=application_terminated $AEGIS_NOTIFY" label=aegis_application_terminated
 yabai -m signal --add event=application_front_switched action="YABAI_EVENT_TYPE=application_front_switched $AEGIS_NOTIFY" label=aegis_application_front_switched
+yabai -m signal --add event=application_hidden action="YABAI_EVENT_TYPE=application_hidden $AEGIS_NOTIFY" label=aegis_application_hidden
+yabai -m signal --add event=application_visible action="YABAI_EVENT_TYPE=application_visible $AEGIS_NOTIFY" label=aegis_application_visible
 # AEGIS_INTEGRATION_END
-
-echo "Aegis yabai integration loaded"
