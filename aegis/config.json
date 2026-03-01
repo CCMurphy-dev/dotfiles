@@ -29,8 +29,8 @@
   "dropZoneVerticalPadding" : 8,
   "enableLayoutActionHaptics" : true,
   "excludedApps" : [
-    "Aegis",
-    "Finder"
+    "Finder",
+    "Aegis"
   ],
   "excludedBluetoothDevices" : [
     "watch"
