@@ -29,8 +29,8 @@
   "dropZoneVerticalPadding" : 8,
   "enableLayoutActionHaptics" : true,
   "excludedApps" : [
-    "Finder",
-    "Aegis"
+    "Aegis",
+    "Finder"
   ],
   "excludedBluetoothDevices" : [
     "watch"
@@ -52,7 +52,7 @@
   "iconHoverGlowOpacity" : 0.15,
   "inactiveButtonBgOpacity" : 0.12,
   "inactiveSpaceBgOpacity" : 0.34,
-  "launchAtLogin" : false,
+  "launchAtLogin" : true,
   "launcherApps" : [
     "com.apple.finder",
     "com.apple.systempreferences",

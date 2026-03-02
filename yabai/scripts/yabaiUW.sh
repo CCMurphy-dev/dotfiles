@@ -1,13 +1,27 @@
 #!/usr/bin/env bash
 # ~/.config/yabai/scripts/yabaiUW.sh
-# Custom padding for ultrawide monitor (display 2)
+# Custom padding for ultrawide monitor (21:9 aspect ratio)
 # Display 1 (MacBook) uses standard yabai config
 
 # Get the focused space's display
 DISPLAY_ID=$(yabai -m query --spaces --space | jq '.display')
 
-# Only apply custom logic to ultrawide (display 2)
-[[ $DISPLAY_ID != 2 ]] && exit 0
+# Skip MacBook internal display (always display 1)
+[[ $DISPLAY_ID == 1 ]] && exit 0
+
+# Check if external display is ultrawide (21:9 ≈ 2.37 ratio vs 16:9 ≈ 1.78)
+display_info=$(yabai -m query --displays --display "$DISPLAY_ID")
+display_width=$(echo "$display_info" | jq '.frame.w | floor')
+display_height=$(echo "$display_info" | jq '.frame.h | floor')
+
+# Integer arithmetic: multiply by 100 to avoid floats
+# Ultrawide ~237, Standard ~178 — threshold of 200 safely separates them
+aspect_ratio=$((display_width * 100 / display_height))
+if [[ $aspect_ratio -le 200 ]]; then
+  # External non-ultrawide: bump top padding for Aegis menu bar, keep other defaults
+  yabai -m space --padding abs:40:20:40:40
+  exit 0
+fi
 
 # Count visible, non-floating windows on the current space
 windows=$(yabai -m query --windows --space | jq '[.[] | select(."is-visible"==true and ."is-floating"==false and ."is-tab"==false)] | length')
