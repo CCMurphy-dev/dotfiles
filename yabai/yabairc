@@ -83,7 +83,8 @@ yabai -m rule --add label="Aegis" app="^Aegis$" manage=off
 yabai -m rule --add label="iTerm2" app="^iTerm2$" manage=off
 
 # Rule for native tabbed windows
-yabai -m rule --add app="^Finder$" manage=tab
+#yabai -m rule --add app="^Finder$" manage=tab
+yabai -m rule --add app="^Finder$" manage=off
 yabai -m rule --add app="^Terminal$" manage=tab
 yabai -m rule --add app="^Preview$" manage=tab
 
