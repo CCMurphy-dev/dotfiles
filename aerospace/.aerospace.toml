@@ -1,0 +1,5 @@
+# AeroSpace config
+# See https://nikitabobko.github.io/AeroSpace/guide for full reference
+
+# AEGIS_INTEGRATION
+exec-on-workspace-change = ['/bin/bash', '-c', '$HOME/.config/aegis/aegis-aerospace-notify']

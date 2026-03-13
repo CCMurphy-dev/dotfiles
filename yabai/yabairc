@@ -137,6 +137,15 @@ yabai -m signal --add event=window_minimized action="YABAI_EVENT_TYPE=window_min
 yabai -m signal --add event=window_deminimized action="YABAI_EVENT_TYPE=window_deminimized ~/.config/yabai/scripts/yabaiUW.sh"
 yabai -m signal --add event=space_changed action="YABAI_EVENT_TYPE=space_changed ~/.config/yabai/scripts/yabaiUW.sh"
 
+# Display disconnect/reconnect window preservation
+#~/.config/yabai/scripts/display-cache.sh &
+#yabai -m signal --add event=window_created   action="~/.config/yabai/scripts/display-cache.sh"   label=display_cache_win_created
+#yabai -m signal --add event=window_destroyed action="~/.config/yabai/scripts/display-cache.sh"   label=display_cache_win_destroyed
+#yabai -m signal --add event=window_moved     action="~/.config/yabai/scripts/display-cache.sh"   label=display_cache_win_moved
+#yabai -m signal --add event=space_changed    action="~/.config/yabai/scripts/display-cache.sh"   label=display_cache_space_changed
+#yabai -m signal --add event=display_added    action="~/.config/yabai/scripts/display-added.sh"   label=display_restore_added
+#yabai -m signal --add event=display_removed  action="~/.config/yabai/scripts/display-removed.sh" label=display_restore_removed
+
 
 # AEGIS_INTEGRATION_START
 # Aegis window manager integration - DO NOT EDIT THIS SECTION

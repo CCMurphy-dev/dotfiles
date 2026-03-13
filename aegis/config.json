@@ -12,7 +12,8 @@
   "appSwitcherEnabled" : true,
   "appSwitcherShowHidden" : false,
   "appSwitcherShowMinimized" : true,
-  "appTheme" : "dark",
+  "appTheme" : "custom",
+  "autoExpandFocusedWindow" : true,
   "autoScrollDuration" : 0.3,
   "batteryCriticalThreshold" : 0.1,
   "batteryHighThreshold" : 0.75,
@@ -22,6 +23,25 @@
   "buttonLabelExpandedWidth" : 95,
   "collapseAnimationDamping" : 0.8,
   "collapseAnimationResponse" : 0.25,
+  "colorPresets" : [
+    {
+      "backgroundColor" : "#464961",
+      "borderColor" : "#c29df1",
+      "id" : "03CD2E3F-1108-4CD7-BDA4-6113C631AA7C",
+      "name" : "catpuccin",
+      "textColor" : "#F7C7EB"
+    },
+    {
+      "backgroundColor" : "#4E4D4B",
+      "borderColor" : "#E4E4D1",
+      "id" : "BF59AEA4-079F-4C1E-A14C-799E33A32DAA",
+      "name" : "slate",
+      "textColor" : "#E4E4D1"
+    }
+  ],
+  "customBackgroundColor" : "#4E4D4B",
+  "customBorderColor" : "#E4E4D1",
+  "customTextColor" : "#E4E4D1",
   "dateFormat" : "short",
   "deviceHUDAutoHideDelay" : 3,
   "dragDistanceThreshold" : 3,
@@ -50,8 +70,8 @@
   "iconHoverBgOpacity" : 0.2,
   "iconHoverGlowOpacity" : 0.15,
   "inactiveButtonBgOpacity" : 0.12,
-  "inactiveSpaceBgOpacity" : 0.34,
-  "launchAtLogin" : true,
+  "inactiveSpaceBgOpacity" : 0.44,
+  "launchAtLogin" : false,
   "launcherApps" : [
     "com.apple.finder",
     "com.apple.systempreferences",
@@ -131,8 +151,6 @@
   "swipeDestroyThreshold" : -60,
   "systemIconSize" : 14,
   "systemIconSpacing" : 12,
-  "systemStatusBgOpacity" : 0.12,
-  "systemStatusBorderOpacity" : 0.2,
   "systemStatusCornerRadius" : 8,
   "systemStatusFontSize" : 13,
   "systemStatusFrameHeight" : 20,
@@ -155,6 +173,7 @@
   "windowIconExpansionAutoCollapseDelay" : 2,
   "windowIconFrameHeight" : 22,
   "windowIconFrameWidth" : 26,
+  "windowManagerType" : "yabai",
   "windowTitleFontSize" : 11,
   "windowUpdateDuration" : 0.2
 }

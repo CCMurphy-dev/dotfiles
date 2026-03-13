@@ -61,4 +61,6 @@ hyper - 9 : yabai -m space --focus 9
 
 ###### DEV PORTAL
 
-hyper - l : yabai -m window --insert stack
+
+# Custom 5-window layout (2/3 + 1/3 top, 3 equal bottom)
+hyper - l : ~/.config/yabai/scripts/layout-5window.sh

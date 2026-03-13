@@ -1,0 +1,3 @@
+# Aegis Integration — add this to your .aerospace.toml
+# Notifies Aegis instantly when you switch workspaces
+exec-on-workspace-change = ['/bin/bash', '-c', '$HOME/.config/aegis/aegis-aerospace-notify']
